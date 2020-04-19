@@ -1,0 +1,10 @@
+[geyser.csv]
+Accuracy: 0.87 (+/- 0.11) with params: 1.0 and linear
+Accuracy: 0.87 (+/- 0.12) with params: 0.01 and poly with gamma = auto
+Accuracy: 0.84 (+/- 0.09) with params: 1.0 and rbf with gamma = scale
+Accuracy: 0.32 (+/- 0.53) with params: 100.0 and sigmoid with gamma = 0.2
+[chips.csv]
+Accuracy: 0.67 (+/- 0.02) with params: 0.01 and linear
+Accuracy: 0.67 (+/- 0.02) with params: 0.01 and poly with gamma = auto
+Accuracy: 0.67 (+/- 0.34) with params: 10.0 and rbf with gamma = scale
+Accuracy: 0.67 (+/- 0.02) with params: 0.01 and sigmoid with gamma = auto
