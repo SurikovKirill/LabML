@@ -3,10 +3,10 @@ import csv
 import random
 import seaborn as sns
 from scipy.spatial.distance import euclidean
-
-sns.set()
+from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import normalize
+sns.set()
 
 Y = []
 X = []
@@ -49,24 +49,13 @@ def iterate_k_means(data_points, centroids, total_iteration):
 def print_label_data(result):
     res = 0.0
     arr = []
-    print("Result of k-Means Clustering: \n")
     for data in result[0]:
-        g = result[1][data[0]-1]
-        print(result[1][data[0]-1])
-        print(data[1])
-        res += euclidean(result[1][data[0]-1], data[1])
-        print("data point: {}".format(data[1]))
+        res += euclidean(result[1][data[0] - 1], data[1])
         arr.append(int(data[0]))
         print("cluster number: {} \n".format(data[0]))
     print("Last centroids position: \n {}".format(result[1]))
-    print("WSS" + str(res))
-    return arr
-
-#
-# def WSS():
-
-
-
+    print("WSS " + str(res))
+    return arr, res
 
 def jaccard(cluster, true_classes):
     tp = 0.0
@@ -88,15 +77,10 @@ def jaccard(cluster, true_classes):
     return tp / (tp + tn + fp)
 
 
-def create_centroids():
+def create_centroids(num):
     centroids = []
-    centroids.append([random.random(), random.random(), random.random()])
-    centroids.append([random.random(), random.random(), random.random()])
-    centroids.append([random.random(), random.random(), random.random()])
-    centroids.append([random.random(), random.random(), random.random()])
-    centroids.append([random.random(), random.random(), random.random()])
-    centroids.append([random.random(), random.random(), random.random()])
-    centroids.append([random.random(), random.random(), random.random()])
+    for i in range(num):
+        centroids.append([random.random(), random.random(), random.random()])
     return np.array(centroids)
 
 
@@ -109,12 +93,10 @@ if __name__ == "__main__":
                 Y.append(int(attributes.pop()))
                 X.append(attributes)
     features = normalize(np.array(X))
-    centroids = create_centroids()
+    centroids = create_centroids(5)
     total_iteration = 100
     [cluster_label, new_centroids] = iterate_k_means(features, centroids, total_iteration)
-    arr = print_label_data([cluster_label, new_centroids])
-
-    from sklearn.decomposition import PCA
+    arr, WSS = print_label_data([cluster_label, new_centroids])
 
     pca = PCA(n_components=2)
     dataTwoDimensional = pca.fit_transform(features)
@@ -129,3 +111,21 @@ if __name__ == "__main__":
     ax = sns.scatterplot(x=x, y=y, hue=arr)
     plt.show()
     print(jaccard(arr, Y))
+    w = []
+    j = []
+    for i in range(1, 10):
+        features = normalize(np.array(X))
+        centroids = create_centroids(i)
+        total_iteration = 100
+        [cluster_label, new_centroids] = iterate_k_means(features, centroids, total_iteration)
+        arr, WSS = print_label_data([cluster_label, new_centroids])
+        j.append(jaccard(arr, Y))
+        w.append(WSS)
+    print(w)
+    print(j)
+    plt.clf()
+    sns.lineplot(x=[i for i in range(1, 10)], y=w)
+    plt.show()
+    plt.clf()
+    sns.lineplot(x=[i for i in range(1, 10)], y=j)
+    plt.show()
